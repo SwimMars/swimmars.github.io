@@ -41,5 +41,5 @@ jobs:
         run: |
           curl -X POST "$API_URL" \
           -H "Content-Type: application/json" \
-          -H "X-Authorization: $AUTH_HEADER" \
+          -H "X-Authorization: "80A4A6D2C7894332-7FD9B6B01144357E-BABA47BAB1BEAB0F-BDFF1-8DDD59A5D7EA784-j+PpHTDVEWP3ysLkZAHGh7T9COzxWISQBDcpWz0GLYc=" \
           -d "$(echo $PAYLOAD_BASE | jq --arg fn finishMatch '. + {FunctionName: $fn}')"
