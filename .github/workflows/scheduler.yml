@@ -3,6 +3,7 @@ name: Trigger Game Functions
 on:
   schedule:
     - cron: '*/10 * * * *'  # Every 10 minutes
+  workflow_dispatch:
 
 jobs:
   call-functions:
