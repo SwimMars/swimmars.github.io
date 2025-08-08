@@ -2,21 +2,18 @@ name: Trigger Game Functions
 
 on:
   schedule:
-   - cron: '* * * * *'
-
+    - cron: '* * * * *'
 
 jobs:
   call-functions:
     runs-on: ubuntu-latest
     steps:
-      - name: Call startNewMatch
+      - name: Set up common variables
         run: |
-          curl -X POST https://bdff1.playfabapi.com/Client/ExecuteCloudScript \
-          -H "Content-Type: application/json" \
-          -H "X-Authorization: 80A4A6D2C7894332-7FD9B6B01144357E-BABA47BAB1BEAB0F-BDFF1-8DDD662D9AE3394-ACe/oMpOi7Chd9Ij6VFYLEXEzlsAxu7egFXB2/Dh1OE=" \
-          -d '{
+          echo "API_URL=https://bdff1.playfabapi.com/Client/ExecuteCloudScript" >> $GITHUB_ENV
+          echo "AUTH_HEADER=${{ 80A4A6D2C7894332-7FD9B6B01144357E-BABA47BAB1BEAB0F-BDFF1-8DDD59A5D7EA784-j+PpHTDVEWP3ysLkZAHGh7T9COzxWISQBDcpWz0GLYc= }}" >> $GITHUB_ENV
+          echo 'PAYLOAD_BASE={
             "CustomTags": null,
-            "FunctionName": "startNewMatch",
             "FunctionParameter": {
               "roomType": "QUICK_GAME",
               "playerIds": ["80A4A6D2C7894332", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60"]
@@ -25,40 +22,25 @@ jobs:
             "RevisionSelection": null,
             "SpecificRevision": null,
             "AuthenticationContext": null
-          }'
+          }' >> $GITHUB_ENV
+
+      - name: Call startNewMatch
+        run: |
+          curl -X POST "$API_URL" \
+          -H "Content-Type: application/json" \
+          -H "X-Authorization: $AUTH_HEADER" \
+          -d "$(echo $PAYLOAD_BASE | jq --arg fn startNewMatch '. + {FunctionName: $fn}')"
 
       - name: Call decideSpecialRole
         run: |
-          curl -X POST https://bdff1.playfabapi.com/Client/ExecuteCloudScript \
+          curl -X POST "$API_URL" \
           -H "Content-Type: application/json" \
-          -H "X-Authorization: 80A4A6D2C7894332-7FD9B6B01144357E-BABA47BAB1BEAB0F-BDFF1-8DDD662D9AE3394-ACe/oMpOi7Chd9Ij6VFYLEXEzlsAxu7egFXB2/Dh1OE=" \
-          -d '{
-            "CustomTags": null,
-            "FunctionName": "decideSpecialRole",
-            "FunctionParameter": {
-              "roomType": "QUICK_GAME",
-              "playerIds": ["80A4A6D2C7894332", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60"]
-            },
-            "GeneratePlayStreamEvent": true,
-            "RevisionSelection": null,
-            "SpecificRevision": null,
-            "AuthenticationContext": null
-          }'
+          -H "X-Authorization: $AUTH_HEADER" \
+          -d "$(echo $PAYLOAD_BASE | jq --arg fn decideSpecialRole '. + {FunctionName: $fn}')"
 
       - name: Call finishMatch
         run: |
-          curl -X POST https://bdff1.playfabapi.com/Client/ExecuteCloudScript \
+          curl -X POST "$API_URL" \
           -H "Content-Type: application/json" \
-          -H "X-Authorization: 80A4A6D2C7894332-7FD9B6B01144357E-BABA47BAB1BEAB0F-BDFF1-8DDD662D9AE3394-ACe/oMpOi7Chd9Ij6VFYLEXEzlsAxu7egFXB2/Dh1OE=" \
-          -d '{
-            "CustomTags": null,
-            "FunctionName": "finishMatch",
-            "FunctionParameter": {
-              "roomType": "QUICK_GAME",
-              "playerIds": ["80A4A6D2C7894332", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60"]
-            },
-            "GeneratePlayStreamEvent": true,
-            "RevisionSelection": null,
-            "SpecificRevision": null,
-            "AuthenticationContext": null
-          }'
+          -H "X-Authorization: $AUTH_HEADER" \
+          -d "$(echo $PAYLOAD_BASE | jq --arg fn finishMatch '. + {FunctionName: $fn}')"
