@@ -11,9 +11,8 @@ jobs:
     steps:
       - name: Set up common variables
         run: |
-          echo "API_URL=https://bdff1.playfabapi.com/Client/ExecuteCloudScript" >> $GITHUB_ENV
+          echo "API_URL=https://bdff1.playfabapi.com/Client/ExecuteCloudScript" >> 
           echo 'PAYLOAD_BASE={
-            "CustomTags": null,
             "FunctionParameter": {
               "roomType": "QUICK_GAME",
               "playerIds": ["80A4A6D2C7894332", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60"]
@@ -22,7 +21,7 @@ jobs:
             "RevisionSelection": null,
             "SpecificRevision": null,
             "AuthenticationContext": null
-          }' >> $GITHUB_ENV
+          }' >> 
 
       - name: Call startNewMatch
         run: |
