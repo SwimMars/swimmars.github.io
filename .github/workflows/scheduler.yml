@@ -11,7 +11,7 @@ jobs:
       - name: Set up common variables
         run: |
           echo "API_URL=https://bdff1.playfabapi.com/Client/ExecuteCloudScript" >> $GITHUB_ENV
-          echo "AUTH_HEADER=${{ 80A4A6D2C7894332-7FD9B6B01144357E-BABA47BAB1BEAB0F-BDFF1-8DDD59A5D7EA784-j+PpHTDVEWP3ysLkZAHGh7T9COzxWISQBDcpWz0GLYc= }}" >> $GITHUB_ENV
+          echo "AUTH_HEADER=${{80A4A6D2C7894332-7FD9B6B01144357E-BABA47BAB1BEAB0F-BDFF1-8DDD59A5D7EA784-j+PpHTDVEWP3ysLkZAHGh7T9COzxWISQBDcpWz0GLYc=}}" >> $GITHUB_ENV
           echo 'PAYLOAD_BASE={
             "CustomTags": null,
             "FunctionParameter": {
