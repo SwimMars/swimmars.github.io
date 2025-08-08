@@ -1,0 +1,53 @@
+name: Trigger Game Functions
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+
+
+jobs:
+  call-functions:
+    runs-on: ubuntu-latest
+    env:
+      API_URL: https://bdff1.playfabapi.com/Client/ExecuteCloudScript
+      AUTH_TOKEN: 80A4A6D2C7894332-7FD9B6B01144357E-BABA47BAB1BEAB0F-BDFF1-8DDD662D9AE3394-ACe/oMpOi7Chd9Ij6VFYLEXEzlsAxu7egFXB2/Dh1OE=
+    steps:
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Set up payload base
+        run: |
+          echo '{
+            "FunctionParameter": {
+              "roomType": "QUICK_GAME",
+              "playerIds": ["80A4A6D2C7894332", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60"]
+            },
+            "GeneratePlayStreamEvent": true,
+            "RevisionSelection": null,
+            "SpecificRevision": null,
+            "AuthenticationContext": null
+          }' > payload.json
+
+      - name: Call startNewMatch
+        run: |
+          jq --arg fn startNewMatch '. + {FunctionName: $fn}' payload.json > payload_start.json
+          curl -X POST "$API_URL" \
+            -H "Content-Type: application/json" \
+            -H "X-Authorization: $AUTH_TOKEN" \
+            -d @payload_start.json
+
+      - name: Call decideSpecialRole
+        run: |
+          jq --arg fn decideSpecialRole '. + {FunctionName: $fn}' payload.json > payload_decide.json
+          curl -X POST "$API_URL" \
+            -H "Content-Type: application/json" \
+            -H "X-Authorization: $AUTH_TOKEN" \
+            -d @payload_decide.json
+
+      - name: Call finishMatch
+        run: |
+          jq --arg fn finishMatch '. + {FunctionName: $fn}' payload.json > payload_finish.json
+          curl -X POST "$API_URL" \
+            -H "Content-Type: application/json" \
+            -H "X-Authorization: $AUTH_TOKEN" \
+            -d @payload_finish.json
