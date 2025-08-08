@@ -1,16 +1,63 @@
-name: Scheduled API Trigger
+name: Trigger Game Functions
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Runs every hour
+    - cron: '*/10 * * * *'  # Every 10 minutes
 
 jobs:
-  trigger:
+  call-functions:
     runs-on: ubuntu-latest
     steps:
-      - name: Send API Request
+      - name: Call startNewMatch
         run: |
-          curl -X POST https://api.example.com/endpoint \
+          curl -X POST https://bdff1.playfabapi.com/Client/ExecuteCloudScript \
           -H "Content-Type: application/json" \
-          -H "Authorization: Bearer YOUR_API_KEY" \
-          -d '{"name":"John","email":"john@example.com","message":"Hello from GitHub Actions!"}'
+          -H "X-Authorization: 80A4A6D2C7894332-7FD9B6B01144357E-BABA47BAB1BEAB0F-BDFF1-8DDD662D9AE3394-ACe/oMpOi7Chd9Ij6VFYLEXEzlsAxu7egFXB2/Dh1OE=" \
+          -d '{
+            "CustomTags": null,
+            "FunctionName": "startNewMatch",
+            "FunctionParameter": {
+              "roomType": "QUICK_GAME",
+              "playerIds": ["80A4A6D2C7894332", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60"]
+            },
+            "GeneratePlayStreamEvent": true,
+            "RevisionSelection": null,
+            "SpecificRevision": null,
+            "AuthenticationContext": null
+          }'
+
+      - name: Call decideSpecialRole
+        run: |
+          curl -X POST https://bdff1.playfabapi.com/Client/ExecuteCloudScript \
+          -H "Content-Type: application/json" \
+          -H "X-Authorization: 80A4A6D2C7894332-7FD9B6B01144357E-BABA47BAB1BEAB0F-BDFF1-8DDD662D9AE3394-ACe/oMpOi7Chd9Ij6VFYLEXEzlsAxu7egFXB2/Dh1OE=" \
+          -d '{
+            "CustomTags": null,
+            "FunctionName": "decideSpecialRole",
+            "FunctionParameter": {
+              "roomType": "QUICK_GAME",
+              "playerIds": ["80A4A6D2C7894332", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60"]
+            },
+            "GeneratePlayStreamEvent": true,
+            "RevisionSelection": null,
+            "SpecificRevision": null,
+            "AuthenticationContext": null
+          }'
+
+      - name: Call finishMatch
+        run: |
+          curl -X POST https://bdff1.playfabapi.com/Client/ExecuteCloudScript \
+          -H "Content-Type: application/json" \
+          -H "X-Authorization: 80A4A6D2C7894332-7FD9B6B01144357E-BABA47BAB1BEAB0F-BDFF1-8DDD662D9AE3394-ACe/oMpOi7Chd9Ij6VFYLEXEzlsAxu7egFXB2/Dh1OE=" \
+          -d '{
+            "CustomTags": null,
+            "FunctionName": "finishMatch",
+            "FunctionParameter": {
+              "roomType": "QUICK_GAME",
+              "playerIds": ["80A4A6D2C7894332", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60", "F930D42AFE1ED60"]
+            },
+            "GeneratePlayStreamEvent": true,
+            "RevisionSelection": null,
+            "SpecificRevision": null,
+            "AuthenticationContext": null
+          }'
