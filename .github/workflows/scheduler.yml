@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       API_URL: https://bdff1.playfabapi.com/Client/ExecuteCloudScript
-      AUTH_TOKEN: "80A4A6D2C7894332-7FD9B6B01144357E-BABA47BAB1BEAB0F-BDFF1-8DDD59A5D7EA784-j+PpHTDVEWP3ysLkZAHGh7T9COzxWISQBDcpWz0GLYc="
+      AUTH_TOKEN: 80A4A6D2C7894332-7FD9B6B01144357E-BABA47BAB1BEAB0F-BDFF1-8DDD662D9AE3394-ACe/oMpOi7Chd9Ij6VFYLEXEzlsAxu7egFXB2/Dh1OE=
     steps:
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
