@@ -2,12 +2,11 @@
 <html>
   <head>
     <title>Secret Neighbor Authentication</title>
-    <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://download.playfab.com/PlayFabClientApi.js"></script>
     <style>
       body {
         font-family: Arial, sans-serif;
-        text-align: center;
         margin: 0;
         padding: 0;
         height: 100vh;
@@ -24,7 +23,7 @@
 
       h1 {
         font-size: 2.5em;
-        margin-bottom: 50px;
+        margin-bottom: 60px;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
       }
 
@@ -60,11 +59,13 @@
         border-radius: 5px;
         max-width: 80%;
         word-wrap: break-word;
+        text-align: left;
       }
     </style>
   </head>
   <body>
     <h1>Secret Neighbor Authentication</h1>
+
     <button class="google-button" onclick="getToken();">
       <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Gmail_Icon.png" alt="Email Icon">
       Sign in with Google
@@ -73,25 +74,38 @@
     <div class="log-output" id="log"></div>
 
     <script>
-      let client;
       let access_token = "";
 
-      function initClient() {
-        console.log("Initializing Google token client on page load");
-
-        client = google.accounts.oauth2.initTokenClient({
-          client_id: "402068288972-e78up3e9ak1diof9fn43l2p9nia0sol4.apps.googleusercontent.com",
+      function getToken() {
+        const client = google.accounts.oauth2.initTokenClient({
+          client_id: "402068288972-e78up3e9ak1diof9fn43l2p9nia0sol4.apps.googleusercontent.com", // 🔁 Replace with your actual Google Client ID
           scope: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
-          prompt: 'select_account', // Forces account selection and usually a fresh token
+          prompt: "consent", // Forces re-consent and fresh token
           callback: (tokenResponse) => {
             access_token = tokenResponse.access_token;
             logLine("✅ Access Token: " + access_token);
+            onSignIn();
           }
         });
+
+        client.requestAccessToken();
       }
 
-      function getToken() {
-        client.requestAccessToken();
+      function onSignIn() {
+        logLine("🔐 Attempting PlayFab Sign-in using LoginWithGoogleAccount");
+
+        PlayFabClientSDK.LoginWithGoogleAccount({
+          AccessToken: access_token,
+          CreateAccount: true,
+          TitleId: "1169A6"
+        }, onPlayFabResponse);
+      }
+
+      function onPlayFabResponse(response, error) {
+        if (response)
+          logLine("🎉 PlayFab Response: " + JSON.stringify(response));
+        if (error)
+          logLine("❌ PlayFab Error: " + JSON.stringify(error));
       }
 
       function logLine(message) {
