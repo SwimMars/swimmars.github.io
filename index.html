@@ -1,57 +1,98 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
-    <script src="https://download.playfab.com/PlayFabClientApi.js"></script>
-  </head>
-  <body>
-    <script>
-      var client;
-      function initClient() {
-          console.log("Initializing Google token client on page load");
-          client = google.accounts.oauth2.initTokenClient({
-              client_id: "402068288972-e78up3e9ak1diof9fn43l2p9nia0sol4.apps.googleusercontent.com", // TODO: PUT YOUR GOOGLE CLIENT_ID HERE!
-              callback: "onTokenResponse",
-              scope: "https://www.googleapis.com/auth/userinfo.profile",
-              callback: (tokenResponse) => {
-                  access_token = tokenResponse.access_token;
-                  onSignIn();
-              }
-          });
+    <title>Secret Neighbor Authentication</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-image: url('https://wallpaperaccess.com/full/9331537.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        color: white;
       }
 
+      h1 {
+        font-size: 2.5em;
+        margin-bottom: 60px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+      }
+
+      .google-button {
+        background-color: #4285F4;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        transition: background-color 0.3s ease;
+      }
+
+      .google-button:hover {
+        background-color: #357ae8;
+      }
+
+      .google-button img {
+        width: 20px;
+        height: 20px;
+      }
+
+      .log-output {
+        margin-top: 30px;
+        font-size: 14px;
+        background-color: rgba(0,0,0,0.5);
+        padding: 10px;
+        border-radius: 5px;
+        max-width: 80%;
+        word-wrap: break-word;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Secret Neighbor Authentication</h1>
+
+    <button class="google-button" onclick="getToken();">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Gmail_Icon.png" alt="Email Icon">
+      Sign in with Google
+    </button>
+
+    <div class="log-output" id="log"></div>
+
+    <script>
+      let access_token = "";
+
       function getToken() {
+        const client = google.accounts.oauth2.initTokenClient({
+          client_id: "YOUR_CLIENT_ID", // 🔁 Replace with your actual Google Client ID
+          scope: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+          prompt: "consent",
+          callback: (tokenResponse) => {
+            access_token = tokenResponse.access_token;
+            logLine("✅ Access Token: " + access_token);
+          }
+        });
+
         client.requestAccessToken();
       }
 
-      // Invoked after user has signed in with Google
-      function onSignIn() {
-          // Execute LoginWithGoogleAccount API call using the Google access token. Please replace TitleId.
-          logLine("Attempting PlayFab Sign-in using LoginWithGoogleAccount");
-          PlayFabClientSDK.LoginWithGoogleAccount({
-              AccessToken: access_token, // This access token is generated after a user has signed into Google
-              CreateAccount: true,
-              TitleId: "1169A6", // TODO: PUT YOUR TITLE ID HERE!
-          }, onPlayFabResponse);
-      }
-
-      // Handles response from PlayFab
-      function onPlayFabResponse(response, error) {
-          if (response)
-              logLine("Response: " + JSON.stringify(response));
-          if (error)
-              logLine("Error: " + JSON.stringify(error));
-      }
-
       function logLine(message) {
-          var textnode = document.createTextNode(message);
-          document.body.appendChild(textnode);
-          var br = document.createElement("br");
-          document.body.appendChild(br);
+        const logDiv = document.getElementById("log");
+        logDiv.textContent = message;
       }
     </script>
-    <h1>Secret Neighbor Authentication</h1>
-    <!-- Clicking this button will prompt the user to sign into Google. Once they have signed into Google, LoginWithGoogleAccount is automatically called. -->
-    <button onclick="getToken();">Sign into Google</button><br><br>
   </body>
 </html>
