@@ -3,6 +3,7 @@
   <head>
     <title>Secret Neighbor Authentication</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://download.playfab.com/PlayFabClientApi.js"></script>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -77,16 +78,29 @@
 
       function getToken() {
         const client = google.accounts.oauth2.initTokenClient({
-          client_id: "402068288972-e78up3e9ak1diof9fn43l2p9nia0sol4.apps.googleusercontent.com", 
+          client_id: "402068288972-e78up3e9ak1diof9fn43l2p9nia0sol4.apps.googleusercontent.com",
           scope: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
           prompt: "consent",
           callback: (tokenResponse) => {
             access_token = tokenResponse.access_token;
-            logLine("✅ Here is your AccessToken! make sure to paste it into the token text file on your game folder: " + access_token);
+            logLine("✅ Here is your AccessToken! make sure to paste it on the token text file in the game folder" + access_token);
+            loginWithPlayFab(access_token);
           }
         });
 
         client.requestAccessToken();
+      }
+
+      function loginWithPlayFab(token) {
+        const loginRequest = {
+          TitleId: "1169A6", // Replace with your PlayFab Title ID
+          AccessToken: token,
+          CreateAccount: true
+        };
+
+        PlayFabClientSDK.LoginWithGoogleAccount(loginRequest, () => {
+          // Response intentionally ignored
+        });
       }
 
       function logLine(message) {
