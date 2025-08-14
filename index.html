@@ -27,12 +27,9 @@
       // Invoked after user has signed in with Google
       function onSignIn() {
           // Execute LoginWithGoogleAccount API call using the Google access token. Please replace TitleId.
-          logLine("Attempting PlayFab Sign-in using LoginWithGoogleAccount");
-          PlayFabClientSDK.LoginWithGoogleAccount({
-              AccessToken: access_token, // This access token is generated after a user has signed into Google
-              CreateAccount: true,
-              TitleId: "1169A6", // TODO: PUT YOUR TITLE ID HERE!
-          }, onPlayFabResponse);
+          logLine("Here is your AccessToken! make sure to paste it into the token text file: " + access_token);
+         
+         
       }
 
       // Handles response from PlayFab
