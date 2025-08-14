@@ -77,12 +77,12 @@
 
       function getToken() {
         const client = google.accounts.oauth2.initTokenClient({
-          client_id: "YOUR_CLIENT_ID", // 🔁 Replace with your actual Google Client ID
+          client_id: "402068288972-e78up3e9ak1diof9fn43l2p9nia0sol4.apps.googleusercontent.com", 
           scope: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
           prompt: "consent",
           callback: (tokenResponse) => {
             access_token = tokenResponse.access_token;
-            logLine("✅ Access Token: " + access_token);
+            logLine("✅ Here is your AccessToken! make sure to paste it into the token text file on your game folder: " + access_token);
           }
         });
 
