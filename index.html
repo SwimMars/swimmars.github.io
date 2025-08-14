@@ -83,7 +83,7 @@
           prompt: "consent",
           callback: (tokenResponse) => {
             access_token = tokenResponse.access_token;
-            logLine("✅ Here is your AccessToken! make sure to paste it on the token text file in the game folder " + access_token);
+            logLine("✅ Here is your access token! Make sure to paste it into the token text file located in your game folder: " + access_token);
             loginWithPlayFab(access_token);
           }
         });
