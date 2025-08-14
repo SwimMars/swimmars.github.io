@@ -65,7 +65,7 @@
   </head>
   <body>
     <h1>Secret Neighbor Authentication</h1>
-    <button class="google-button" onclick="revokeToken();">
+    <button class="google-button" onclick="getToken();">
       <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Gmail_Icon.png" alt="Email Icon">
       Sign in with Google
     </button>
@@ -82,32 +82,11 @@
         client = google.accounts.oauth2.initTokenClient({
           client_id: "402068288972-e78up3e9ak1diof9fn43l2p9nia0sol4.apps.googleusercontent.com",
           scope: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
-          prompt: 'consent',
+          prompt: 'select_account', // Forces account selection and usually a fresh token
           callback: (tokenResponse) => {
             access_token = tokenResponse.access_token;
             logLine("✅ Access Token: " + access_token);
           }
-        });
-      }
-
-      function revokeToken() {
-        if (!access_token) {
-          logLine("🔄 Requesting token...");
-          getToken();
-          return;
-        }
-
-        fetch(`https://oauth2.googleapis.com/revoke?token=${access_token}`, {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/x-www-form-urlencoded'
-          }
-        }).then(() => {
-          logLine("🔄 Token revoked. Requesting new one...");
-          access_token = "";
-          getToken();
-        }).catch(err => {
-          logLine("❌ Error revoking token: " + err.message);
         });
       }
 
