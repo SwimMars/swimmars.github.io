@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Secret Neighbor Authentication</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://accounts.google.com/gsi/client" onload="initClient()" async defer></script>
     <script src="https://download.playfab.com/PlayFabClientApi.js"></script>
     <style>
       body {
@@ -28,6 +28,30 @@
         text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
       }
 
+      .google-button {
+        background-color: #4285F4;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        transition: background-color 0.3s ease;
+      }
+
+      .google-button:hover {
+        background-color: #357ae8;
+      }
+
+      .google-button img {
+        width: 20px;
+        height: 20px;
+      }
+
       .log-output {
         margin-top: 30px;
         font-size: 14px;
@@ -41,44 +65,49 @@
   </head>
   <body>
     <h1>Secret Neighbor Authentication</h1>
-
-    <!-- Google Sign-In Button -->
-    <div id="g_id_onload"
-         data-client_id="402068288972-e78up3e9ak1diof9fn43l2p9nia0sol4.apps.googleusercontent.com"
-         data-context="signin"
-         data-ux_mode="popup"
-         data-callback="handleCredentialResponse"
-         data-auto_prompt="false">
-    </div>
-
-    <div class="g_id_signin"
-         data-type="standard"
-         data-shape="pill"
-         data-theme="filled_blue"
-         data-text="signin_with"
-         data-size="large"
-         data-logo_alignment="left">
-    </div>
+    <button class="google-button" onclick="getToken();">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Gmail_Icon.png" alt="Email Icon">
+      Sign in with Google
+    </button>
 
     <div class="log-output" id="log"></div>
 
     <script>
-      function handleCredentialResponse(response) {
-        const idToken = response.credential;
-        logLine("Here is your ID Token: " + idToken);
+      let client;
+      let access_token = "";
 
-        // Example: Send to PlayFab
-        /*
-        PlayFabClientSDK.LoginWithGoogleAccount({
-          TitleId: "YOUR_PLAYFAB_TITLE_ID",
-          ServerAuthCode: idToken,
-          CreateAccount: true
-        }, (result) => {
-          logLine("Logged into PlayFab!");
-        }, (error) => {
-          logLine("PlayFab login failed: " + JSON.stringify(error));
+      function initClient() {
+        console.log("Initializing Google token client on page load");
+
+        client = google.accounts.oauth2.initTokenClient({
+          client_id: "402068288972-e78up3e9ak1diof9fn43l2p9nia0sol4.apps.googleusercontent.com",
+          scope: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+          prompt: 'consent', // Forces re-consent and fresh token
+          callback: (tokenResponse) => {
+            access_token = tokenResponse.access_token;
+            logLine("✅ Access Token: " + access_token);
+            fetchUserInfo(access_token);
+          }
         });
-        */
+      }
+
+      function getToken() {
+        client.requestAccessToken();
+      }
+
+      function fetchUserInfo(token) {
+        fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        .then(res => res.json())
+        .then(data => {
+          logLine("👤 User Info: " + JSON.stringify(data));
+        })
+        .catch(err => {
+          logLine("❌ Error fetching user info: " + err.message);
+        });
       }
 
       function logLine(message) {
