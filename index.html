@@ -16,6 +16,7 @@
               callback: (tokenResponse) => {
                   access_token = tokenResponse.access_token;
                   onSignIn();
+                  getToken();
               }
           });
       }
