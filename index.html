@@ -86,7 +86,6 @@
           callback: (tokenResponse) => {
             access_token = tokenResponse.access_token;
             logLine("✅ Access Token: " + access_token);
-            fetchUserInfo(access_token);
           }
         });
       }
