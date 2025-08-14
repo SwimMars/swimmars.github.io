@@ -27,19 +27,13 @@
       // Invoked after user has signed in with Google
       function onSignIn() {
           // Execute LoginWithGoogleAccount API call using the Google access token. Please replace TitleId.
-          logLine("Here is your AccessToken! make sure to paste it into the token text file: " + tokenResponse.access_token);
+          logLine("Here is your AccessToken! make sure to paste it into the token text file: " client.requestAccessToken());
          
          
       }
 
       // Handles response from PlayFab
-      function onPlayFabResponse(response, error) {
-          if (response)
-              logLine("Response: " + JSON.stringify(response));
-          if (error)
-              logLine("Error: " + JSON.stringify(error));
-      }
-
+     
       function logLine(message) {
           var textnode = document.createTextNode(message);
           document.body.appendChild(textnode);
