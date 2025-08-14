@@ -83,7 +83,7 @@
           prompt: "consent",
           callback: (tokenResponse) => {
             access_token = tokenResponse.access_token;
-            logLine("✅ Here is your access token! Make sure to paste it into the token text file located in your game folder: " + access_token);
+            logLine("✅ Access token received. Logging in...");
             loginWithPlayFab(access_token);
           }
         });
@@ -98,8 +98,31 @@
           CreateAccount: true
         };
 
-        PlayFabClientSDK.LoginWithGoogleAccount(loginRequest, () => {
-          // Response intentionally ignored
+        PlayFabClientSDK.LoginWithGoogleAccount(loginRequest, (result, error) => {
+          if (error) {
+            if (error.error === "AccountBanned") {
+              const banReason = error.errorMessage || "No reason provided.";
+              logLine("🚫 Your account has been banned. Reason: " + banReason);
+            } else {
+              logLine("❌ Login failed: " + error.errorMessage);
+            }
+          } else {
+            logLine("✅ Login successful! Checking for bans...");
+            fetchBanInfo();
+          }
+        });
+      }
+
+      function fetchBanInfo() {
+        PlayFabClientSDK.GetUserBans({}, (result, error) => {
+          if (error) {
+            logLine("⚠️ Failed to fetch ban info: " + error.errorMessage);
+          } else if (result.data.BanData && result.data.BanData.length > 0) {
+            const ban = result.data.BanData[0];
+            logLine(`🚫 You are banned. Reason: ${ban.Reason}. Expires: ${ban.Expiration}`);
+          } else {
+            logLine("✅ No bans found. You are good to go!");
+          }
         });
       }
 
