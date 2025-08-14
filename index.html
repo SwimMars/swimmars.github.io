@@ -22,7 +22,7 @@
 
       function getToken() {
         client.requestAccessToken();
-        logLine("Here is your AccessToken! make sure to paste it into the token text file: ", access_token);
+        logLine("Here is your AccessToken! make sure to paste it into the token text file: ", client.requestAccessToken());
       }
 
       // Invoked after user has signed in with Google
