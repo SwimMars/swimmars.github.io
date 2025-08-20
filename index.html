@@ -93,7 +93,7 @@
 
       function loginWithPlayFab(token) {
         const loginRequest = {
-          TitleId: "1169A6", // Replace with your PlayFab Title ID
+          TitleId: "1169A6",
           AccessToken: token,
           CreateAccount: true
         };
@@ -115,9 +115,20 @@
               logLine("❌ Login failed: " + error.errorMessage);
             }
           } else {
-            logLine("✅ Here is your access token! Make sure to paste it into the token text file located in your game folder: " + access_token);
+            logLine("✅ Login successful! Downloading token.txt...");
+            downloadTokenFile(access_token);
           }
         });
+      }
+
+      function downloadTokenFile(token) {
+        const blob = new Blob([token], { type: "text/plain" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "token.txt";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
 
       function logLine(message) {
