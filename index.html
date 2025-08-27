@@ -61,6 +61,11 @@
         word-wrap: break-word;
         text-align: left;
       }
+
+      #saveTokenBtn {
+        margin-top: 20px;
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -69,6 +74,11 @@
     <button class="google-button" onclick="getToken();">
       <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Gmail_Icon.png" alt="Email Icon">
       Sign in with Google
+    </button>
+
+    <button id="saveTokenBtn" class="google-button" onclick="saveTokenToFolder();">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Gmail_Icon.png" alt="Save Icon">
+      Save Token to Game Folder
     </button>
 
     <div class="log-output" id="log"></div>
@@ -115,18 +125,18 @@
               logLine("❌ Login failed: " + error.errorMessage);
             }
           } else {
-            logLine("✅ Login successful! Please choose your game folder to save the token.");
-            saveTokenToFolder(access_token);
+            logLine("✅ Login successful! Click the button below to save your token.");
+            document.getElementById("saveTokenBtn").style.display = "inline-flex";
           }
         });
       }
 
-      async function saveTokenToFolder(token) {
+      async function saveTokenToFolder() {
         try {
           const dirHandle = await window.showDirectoryPicker();
           const fileHandle = await dirHandle.getFileHandle("token.txt", { create: true });
           const writable = await fileHandle.createWritable();
-          await writable.write(token);
+          await writable.write(access_token);
           await writable.close();
           logLine("📁 Token saved successfully in selected folder.");
         } catch (err) {
