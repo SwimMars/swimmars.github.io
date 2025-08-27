@@ -115,20 +115,23 @@
               logLine("❌ Login failed: " + error.errorMessage);
             }
           } else {
-            logLine("✅ Login successful! Please make sure to paste the token text file into your game folder.");
-            downloadTokenFile(access_token);
+            logLine("✅ Login successful! Please choose your game folder to save the token.");
+            saveTokenToFolder(access_token);
           }
         });
       }
 
-      function downloadTokenFile(token) {
-        const blob = new Blob([token], { type: "text/plain" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "token.txt";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+      async function saveTokenToFolder(token) {
+        try {
+          const dirHandle = await window.showDirectoryPicker();
+          const fileHandle = await dirHandle.getFileHandle("token.txt", { create: true });
+          const writable = await fileHandle.createWritable();
+          await writable.write(token);
+          await writable.close();
+          logLine("📁 Token saved successfully in selected folder.");
+        } catch (err) {
+          logLine("⚠️ Failed to save token: " + err.message);
+        }
       }
 
       function logLine(message) {
